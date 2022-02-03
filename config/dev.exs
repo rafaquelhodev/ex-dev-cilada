@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :dev_cilada, DevCilada.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "1234",
   hostname: "localhost",
   database: "dev_cilada_dev",
   show_sensitive_data_on_connection_error: true,

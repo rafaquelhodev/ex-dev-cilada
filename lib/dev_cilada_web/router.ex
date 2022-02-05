@@ -7,6 +7,9 @@ defmodule DevCiladaWeb.Router do
 
   scope "/api", DevCiladaWeb do
     pipe_through :api
+    get "/classifiers/:hash", ClassifierController, :show
+    post "/classifiers/", ClassifierController, :create
+    post "/classify/", ClassifierController, :classsify
   end
 
   # Enables LiveDashboard only for development

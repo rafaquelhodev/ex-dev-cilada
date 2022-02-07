@@ -139,7 +139,8 @@ defmodule DevCilada.CiladaTest do
         "cilada_points" => 10
       }
 
-      assert {:ok, classifier} = Cilada.create_classifier(classifier, [perk_cafezinho, perk_vestir_camisa])
+      assert {:ok, classifier} =
+               Cilada.create_classifier(classifier, [perk_cafezinho, perk_vestir_camisa])
 
       assert length(classifier.perks) == 2
 

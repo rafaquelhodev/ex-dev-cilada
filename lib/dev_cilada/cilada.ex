@@ -67,15 +67,14 @@ defmodule DevCilada.Cilada do
     Repo.transaction(fn ->
       classifier = Classifier.changeset(%Classifier{}, classifier)
 
-      perks = Enum.map(perks, fn perk ->
-        Perk.changeset(%Perk{}, Map.put(perk, "classifier", classifier))
-      end)
+      perks =
+        Enum.map(perks, fn perk ->
+          Perk.changeset(%Perk{}, Map.put(perk, "classifier", classifier))
+        end)
 
       classifier_with_perks = Ecto.Changeset.put_assoc(classifier, :perks, perks)
       Repo.insert!(classifier_with_perks)
-
     end)
-
   end
 
   @doc """

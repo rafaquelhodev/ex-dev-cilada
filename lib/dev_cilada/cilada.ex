@@ -3,7 +3,8 @@ defmodule DevCilada.Cilada do
   The Cilada context.
   """
 
-  import Ecto.Query, warn: false
+  import Ecto.Query, only: [from: 2], warn: false
+
   alias DevCilada.Repo
 
   alias DevCilada.Cilada.Classifier
@@ -38,6 +39,19 @@ defmodule DevCilada.Cilada do
 
   """
   def get_classifier!(id), do: Repo.get!(Classifier, id)
+
+  @doc """
+  Returns perks from a classifier from a list of perks.
+  """
+  @spec get_perks_from_classifier(String.t(), list(String.t())) :: list(%Perk{})
+  def get_perks_from_classifier(classifier_id, perk_ids) do
+    query =
+      from p in Perk,
+        where: p.classifier_id == ^classifier_id and p.id in ^perk_ids,
+        select: p
+
+    Repo.all(query)
+  end
 
   # A function head declaring defaults
   def create_classifier(attrs \\ %{})

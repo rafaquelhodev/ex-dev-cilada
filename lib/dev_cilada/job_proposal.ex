@@ -1,5 +1,20 @@
 defmodule DevCilada.JobProposal do
+  alias DevCilada.Cilada
   alias DevCilada.Cilada.Perk
+
+  @doc """
+  Classifies whether a job proposal is a cilada.
+  """
+  @spec classify(binary(), list(binary())) :: boolean()
+  def classify(classifier_id, perks_id) do
+    perks = Cilada.get_perks_from_classifier(classifier_id, perks_id)
+
+    Enum.at(perks, 0)
+    |> Map.get(:classifier_id)
+    |> Cilada.get_classifier!()
+    |> Map.get(:cilada_threshold)
+    |> is_cilada?(perks)
+  end
 
   @doc """
   Informs if a list of `job_perks` is a cilada.

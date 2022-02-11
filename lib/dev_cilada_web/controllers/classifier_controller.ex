@@ -1,14 +1,30 @@
 defmodule DevCiladaWeb.ClassifierController do
   use DevCiladaWeb, :controller
 
+  import DevCilada.UseCases.Classifier
+  import DevCilada.Adapters.AdapterClassifier
+  import DevCilada.Adapters.AdapterPerk
+
   def show(conn, params) do
-    classifier = %{identifier: params["hash"], cilada_threshold: 10}
+    classifier =
+      get_classifier_by_id(params["id"])
+      |> adapt_classifier_to_view()
+
+    perks = adapt_perks_to_view(classifier.perks)
+
+    classifier = Map.put(classifier, :perks, perks)
 
     render(conn, "show.json", classifier: classifier)
   end
 
   def create(conn, %{"classifier" => classifier}) do
-    classifier = %{identifier: 1234, cilada_threshold: classifier["cilada_threshold"]}
+    classifier =
+      with {:ok, classifier} <- create_classifier(classifier),
+           do: adapt_classifier_to_view(classifier)
+
+    perks = adapt_perks_to_view(classifier.perks)
+
+    classifier = Map.put(classifier, :perks, perks)
 
     render(conn, "show.json", classifier: classifier)
   end

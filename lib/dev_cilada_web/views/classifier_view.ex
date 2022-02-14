@@ -11,7 +11,7 @@ defmodule DevCiladaWeb.ClassifierView do
     }
   end
 
-  def render("show.json", %{job_proposal: job_proposal}) do
-    %{data: %{perks: job_proposal.perks, is_cilada: job_proposal.is_cilada}}
+  def render("show.json", %{is_cilada: is_cilada}) do
+    %{data: %{is_cilada: is_cilada}}
   end
 end

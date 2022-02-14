@@ -2,6 +2,7 @@ defmodule DevCiladaWeb.ClassifierController do
   use DevCiladaWeb, :controller
 
   import DevCilada.UseCases.Classifier
+  import DevCilada.UseCases.JobProposal
   import DevCilada.Adapters.AdapterClassifier
   import DevCilada.Adapters.AdapterPerk
 
@@ -30,12 +31,8 @@ defmodule DevCiladaWeb.ClassifierController do
   end
 
   def classsify(conn, %{"job_proposal" => job_proposal}) do
-    job_proposal = %{
-      perks: job_proposal["perks"],
-      classifier: job_proposal["classifier"],
-      is_cilada: true
-    }
-
-    render(conn, "show.json", job_proposal: job_proposal)
+    render(conn, "show.json",
+      is_cilada: classify(job_proposal["classifier"], job_proposal["perks"])
+    )
   end
 end

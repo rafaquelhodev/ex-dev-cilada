@@ -21,15 +21,15 @@ defmodule DevCiladaWeb.ClassifierController do
   end
 
   def create(conn, %{"classifier" => classifier}) do
-    classifier =
-      with {:ok, classifier} <- create_classifier(classifier),
-           do: adapt_classifier_to_view(classifier)
+    with {:ok, classifier} <- create_classifier(classifier) do
+      classifier = adapt_classifier_to_view(classifier)
 
-    perks = adapt_perks_to_view(classifier.perks)
+      perks = adapt_perks_to_view(classifier.perks)
 
-    classifier = Map.put(classifier, :perks, perks)
+      classifier = Map.put(classifier, :perks, perks)
 
-    render(conn, "show.json", classifier: classifier)
+      render(conn, "show.json", classifier: classifier)
+    end
   end
 
   def classsify(conn, %{"job_proposal" => job_proposal}) do

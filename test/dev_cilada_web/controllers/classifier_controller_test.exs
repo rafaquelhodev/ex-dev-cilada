@@ -49,7 +49,7 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
   end
 
   describe "create" do
-    test "create classifier", %{conn: conn} do
+    test "classifier", %{conn: conn} do
       classifier = %{
         classifier: %{
           cilada_threshold: 15,
@@ -76,6 +76,27 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
                "id" => created_classifier.id,
                "cilada_threshold" => 15,
                "perks" => created_perks
+             }
+    end
+
+    test "classifier with wrong inputs", %{conn: conn} do
+      classifier = %{
+        classifier: %{
+          cilada_threshold: 15,
+          perks: [
+            %{cilada_points: 20, description: 10},
+            %{cilada_points: "foo", description: "right description"}
+          ]
+        }
+      }
+
+      conn = post(conn, Routes.classifier_path(conn, :create), classifier)
+
+      assert json_response(conn, 422)["errors"] == %{
+               "perks" => [
+                 %{"description" => ["is invalid"]},
+                 %{"cilada_points" => ["is invalid"]}
+               ]
              }
     end
   end

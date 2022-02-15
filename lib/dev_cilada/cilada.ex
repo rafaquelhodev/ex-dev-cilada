@@ -108,8 +108,9 @@ defmodule DevCilada.Cilada do
         end)
 
       classifier_with_perks = Ecto.Changeset.put_assoc(classifier, :perks, perks)
-      Repo.insert!(classifier_with_perks)
+      Repo.insert(classifier_with_perks)
     end)
+    |> elem(1)
   end
 
   @doc """

@@ -14,4 +14,8 @@ defmodule DevCiladaWeb.ClassifierView do
   def render("show.json", %{is_cilada: is_cilada}) do
     %{data: %{is_cilada: is_cilada}}
   end
+
+  def render("error.json", %{error: reason}) do
+    %{error: %{reason: reason}}
+  end
 end

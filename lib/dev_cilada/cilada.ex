@@ -41,6 +41,27 @@ defmodule DevCilada.Cilada do
   def get_classifier!(id), do: Repo.get!(Classifier, id)
 
   @doc """
+  Gets a single classifier.
+
+  Return `{:ok, classifier}` in case of sucess. In case of not finding, returns `{:error, :not_found}`
+  """
+  @spec get_classifier(binary()) :: {:error, :not_found} | {:ok, %Classifier{}}
+  def get_classifier(id) do
+    case Repo.get(Classifier, id) do
+      nil -> {:error, :not_found}
+      classifier -> {:ok, classifier}
+    end
+  end
+
+  @spec get_classifier_with_perks(binary()) :: {:error, :not_found} | {:ok, %Classifier{}}
+  def get_classifier_with_perks(id) do
+    case get_classifier(id) do
+      {:error, reason} -> {:error, reason}
+      {:ok, classifier} -> {:ok, Repo.preload(classifier, :perks)}
+    end
+  end
+
+  @doc """
   Returns perks from a classifier from a list of perks.
   """
   @spec get_perks_from_classifier(String.t(), list(String.t())) :: list(%Perk{})

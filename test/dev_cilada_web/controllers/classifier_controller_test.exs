@@ -19,7 +19,7 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
 
       assert {:ok, created_classifier} = create_classifier(classifier)
 
-      created_classifier =
+      {:ok, created_classifier} =
         Map.get(created_classifier, :id)
         |> get_classifier_by_id()
 
@@ -34,6 +34,16 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
                "id" => created_classifier.id,
                "cilada_threshold" => 35,
                "perks" => created_perks
+             }
+    end
+
+    test "show error when getting classifier", %{conn: conn} do
+      classifier_id = "e303becf-f552-4b38-ba45-dcf7bd736ece"
+
+      conn = get(conn, Routes.classifier_path(conn, :show, classifier_id))
+
+      assert json_response(conn, 404)["error"] == %{
+               "reason" => "entity not found"
              }
     end
   end
@@ -52,7 +62,7 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
 
       conn = post(conn, Routes.classifier_path(conn, :create), classifier)
 
-      created_classifier =
+      {:ok, created_classifier} =
         json_response(conn, 200)["data"]
         |> Map.get("id")
         |> get_classifier_by_id()
@@ -82,7 +92,7 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
 
       assert {:ok, created_classifier} = create_classifier(classifier)
 
-      created_classifier =
+      {:ok, created_classifier} =
         Map.get(created_classifier, :id)
         |> get_classifier_by_id()
 
@@ -112,7 +122,7 @@ defmodule DevCiladaWeb.ClassifierControllerTest do
 
       assert {:ok, created_classifier} = create_classifier(classifier)
 
-      created_classifier =
+      {:ok, created_classifier} =
         Map.get(created_classifier, :id)
         |> get_classifier_by_id()
 

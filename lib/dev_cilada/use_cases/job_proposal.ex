@@ -4,7 +4,7 @@ defmodule DevCilada.UseCases.JobProposal do
   @doc """
   Classifies whether a job proposal is a cilada.
   """
-  @spec classify(binary(), list(binary())) :: boolean()
+  @spec classify(binary(), list(binary())) :: {:error, :query_error} | {:ok, boolean()}
   def classify(classifier_id, perks_id) do
     JobProposal.classify(classifier_id, perks_id)
   end

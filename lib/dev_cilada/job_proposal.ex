@@ -5,15 +5,18 @@ defmodule DevCilada.JobProposal do
   @doc """
   Classifies whether a job proposal is a cilada.
   """
-  @spec classify(binary(), list(binary())) :: boolean()
+  @spec classify(binary(), list(binary())) :: {:error, :query_error} | {:ok, boolean()}
   def classify(classifier_id, perks_id) do
-    perks = Cilada.get_perks_from_classifier(classifier_id, perks_id)
+    with {:ok, perks} <- Cilada.get_perks_from_classifier(classifier_id, perks_id) do
+      is_cilada =
+        Enum.at(perks, 0)
+        |> Map.get(:classifier_id)
+        |> Cilada.get_classifier!()
+        |> Map.get(:cilada_threshold)
+        |> is_cilada?(perks)
 
-    Enum.at(perks, 0)
-    |> Map.get(:classifier_id)
-    |> Cilada.get_classifier!()
-    |> Map.get(:cilada_threshold)
-    |> is_cilada?(perks)
+      {:ok, is_cilada}
+    end
   end
 
   @doc """

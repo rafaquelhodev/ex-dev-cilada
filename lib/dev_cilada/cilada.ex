@@ -64,14 +64,19 @@ defmodule DevCilada.Cilada do
   @doc """
   Returns perks from a classifier from a list of perks.
   """
-  @spec get_perks_from_classifier(String.t(), list(String.t())) :: list(%Perk{})
+  @spec get_perks_from_classifier(String.t(), list(String.t())) ::
+          {:error, :query_error} | {:ok, list(%Perk{})}
   def get_perks_from_classifier(classifier_id, perk_ids) do
-    query =
-      from p in Perk,
-        where: p.classifier_id == ^classifier_id and p.id in ^perk_ids,
-        select: p
+    try do
+      query =
+        from p in Perk,
+          where: p.classifier_id == ^classifier_id and p.id in ^perk_ids,
+          select: p
 
-    Repo.all(query)
+      {:ok, Repo.all(query)}
+    rescue
+      _ -> {:error, :query_error}
+    end
   end
 
   # A function head declaring defaults

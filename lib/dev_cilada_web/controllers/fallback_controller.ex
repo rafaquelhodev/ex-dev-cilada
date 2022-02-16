@@ -8,6 +8,13 @@ defmodule DevCiladaWeb.FallbackController do
     |> render("error.json", %{error: "entity not found"})
   end
 
+  def call(conn, {:error, :query_error}) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(DevCiladaWeb.ClassifierView)
+    |> render("error.json", %{error: "query error"})
+  end
+
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)

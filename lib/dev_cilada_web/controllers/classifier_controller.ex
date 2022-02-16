@@ -33,8 +33,8 @@ defmodule DevCiladaWeb.ClassifierController do
   end
 
   def classsify(conn, %{"job_proposal" => job_proposal}) do
-    render(conn, "show.json",
-      is_cilada: classify(job_proposal["classifier"], job_proposal["perks"])
-    )
+    with {:ok, is_cilada} <- classify(job_proposal["classifier"], job_proposal["perks"]) do
+      render(conn, "show.json", is_cilada: is_cilada)
+    end
   end
 end

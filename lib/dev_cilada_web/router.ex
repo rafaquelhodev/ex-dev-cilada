@@ -7,7 +7,7 @@ defmodule DevCiladaWeb.Router do
 
   scope "/api", DevCiladaWeb do
     pipe_through :api
-    get "/classifiers/:hash", ClassifierController, :show
+    get "/classifiers/:id", ClassifierController, :show
     post "/classifiers/", ClassifierController, :create
     post "/classify/", ClassifierController, :classsify
   end

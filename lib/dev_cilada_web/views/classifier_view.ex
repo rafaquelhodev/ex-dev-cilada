@@ -2,10 +2,20 @@ defmodule DevCiladaWeb.ClassifierView do
   use DevCiladaWeb, :view
 
   def render("show.json", %{classifier: classifier}) do
-    %{data: %{hash: classifier.identifier, cilada_threshold: classifier.cilada_threshold}}
+    %{
+      data: %{
+        id: classifier.id,
+        cilada_threshold: classifier.cilada_threshold,
+        perks: classifier.perks
+      }
+    }
   end
 
-  def render("show.json", %{job_proposal: job_proposal}) do
-    %{data: %{perks: job_proposal.perks, is_cilada: job_proposal.is_cilada}}
+  def render("show.json", %{is_cilada: is_cilada}) do
+    %{data: %{is_cilada: is_cilada}}
+  end
+
+  def render("error.json", %{error: reason}) do
+    %{error: %{reason: reason}}
   end
 end

@@ -41,16 +41,42 @@ defmodule DevCilada.Cilada do
   def get_classifier!(id), do: Repo.get!(Classifier, id)
 
   @doc """
+  Gets a single classifier.
+
+  Return `{:ok, classifier}` in case of sucess. In case of not finding, returns `{:error, :not_found}`
+  """
+  @spec get_classifier(binary()) :: {:error, :not_found} | {:ok, %Classifier{}}
+  def get_classifier(id) do
+    case Repo.get(Classifier, id) do
+      nil -> {:error, :not_found}
+      classifier -> {:ok, classifier}
+    end
+  end
+
+  @spec get_classifier_with_perks(binary()) :: {:error, :not_found} | {:ok, %Classifier{}}
+  def get_classifier_with_perks(id) do
+    case get_classifier(id) do
+      {:error, reason} -> {:error, reason}
+      {:ok, classifier} -> {:ok, Repo.preload(classifier, :perks)}
+    end
+  end
+
+  @doc """
   Returns perks from a classifier from a list of perks.
   """
-  @spec get_perks_from_classifier(String.t(), list(String.t())) :: list(%Perk{})
+  @spec get_perks_from_classifier(String.t(), list(String.t())) ::
+          {:error, :query_error} | {:ok, list(%Perk{})}
   def get_perks_from_classifier(classifier_id, perk_ids) do
-    query =
-      from p in Perk,
-        where: p.classifier_id == ^classifier_id and p.id in ^perk_ids,
-        select: p
+    try do
+      query =
+        from p in Perk,
+          where: p.classifier_id == ^classifier_id and p.id in ^perk_ids,
+          select: p
 
-    Repo.all(query)
+      {:ok, Repo.all(query)}
+    rescue
+      _ -> {:error, :query_error}
+    end
   end
 
   # A function head declaring defaults
@@ -87,8 +113,9 @@ defmodule DevCilada.Cilada do
         end)
 
       classifier_with_perks = Ecto.Changeset.put_assoc(classifier, :perks, perks)
-      Repo.insert!(classifier_with_perks)
+      Repo.insert(classifier_with_perks)
     end)
+    |> elem(1)
   end
 
   @doc """

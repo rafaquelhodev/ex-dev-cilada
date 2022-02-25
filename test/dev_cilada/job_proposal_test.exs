@@ -17,8 +17,8 @@ defmodule DevCilada.JobProposalTest do
 
       assert {:ok, classifier} = Cilada.create_classifier(classifier, [perk_01, perk_02, perk_03])
 
-      assert JobProposal.classify(classifier.id, Enum.map(classifier.perks, fn p -> p.id end)) ==
-               true
+      assert {:ok, true} =
+               JobProposal.classify(classifier.id, Enum.map(classifier.perks, fn p -> p.id end))
     end
 
     test "classify/2 returns cilada false" do
@@ -31,7 +31,7 @@ defmodule DevCilada.JobProposalTest do
 
       job_perks = Enum.take(classifier.perks, 2) |> Enum.map(fn p -> p.id end)
 
-      assert JobProposal.classify(classifier.id, job_perks) == false
+      assert {:ok, false} = JobProposal.classify(classifier.id, job_perks)
     end
   end
 end

@@ -1,25 +1,40 @@
 defmodule DevCiladaWeb.ClassifierController do
   use DevCiladaWeb, :controller
 
-  def show(conn, params) do
-    classifier = %{identifier: params["hash"], cilada_threshold: 10}
+  import DevCilada.UseCases.Classifier
+  import DevCilada.UseCases.JobProposal
+  import DevCilada.Adapters.AdapterClassifier
+  import DevCilada.Adapters.AdapterPerk
 
-    render(conn, "show.json", classifier: classifier)
+  action_fallback DevCiladaWeb.FallbackController
+
+  def show(conn, params) do
+    with {:ok, classifier} <- get_classifier_by_id(params["id"]) do
+      classifier = adapt_classifier_to_view(classifier)
+
+      perks = adapt_perks_to_view(classifier.perks)
+
+      classifier = Map.put(classifier, :perks, perks)
+
+      render(conn, "show.json", classifier: classifier)
+    end
   end
 
   def create(conn, %{"classifier" => classifier}) do
-    classifier = %{identifier: 1234, cilada_threshold: classifier["cilada_threshold"]}
+    with {:ok, classifier} <- create_classifier(classifier) do
+      classifier = adapt_classifier_to_view(classifier)
 
-    render(conn, "show.json", classifier: classifier)
+      perks = adapt_perks_to_view(classifier.perks)
+
+      classifier = Map.put(classifier, :perks, perks)
+
+      render(conn, "show.json", classifier: classifier)
+    end
   end
 
   def classsify(conn, %{"job_proposal" => job_proposal}) do
-    job_proposal = %{
-      perks: job_proposal["perks"],
-      classifier: job_proposal["classifier"],
-      is_cilada: true
-    }
-
-    render(conn, "show.json", job_proposal: job_proposal)
+    with {:ok, is_cilada} <- classify(job_proposal["classifier"], job_proposal["perks"]) do
+      render(conn, "show.json", is_cilada: is_cilada)
+    end
   end
 end
